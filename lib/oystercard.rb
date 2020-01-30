@@ -19,6 +19,7 @@ class Oystercard
   end
 
   def touch_in(station)
+    
     raise "Insufficient balance to touch in" if @balance < MINIMUM_BALANCE
     @entry_station = station
     #@journey.store(:entry_station, @entry_station)
