@@ -1,18 +1,45 @@
 require 'journey'
 
-describe Journey do 
-    
-  journey = Journey.new("Brixton", "Bank")
-  it 'should return brixton as entry station' do 
-      
-      expect(journey.entry_station).to eq ("Brixton")
-  end 
+describe Journey do
+  subject(:journey) { described_class.new }
+  let(:entry_station) {double("Liverpool Street")}
+  let(:exit_station) {double("Hyde Park")}
+ 
+  it "#starts a journey" do
+    journey.journey_start=(entry_station)
+    expect(journey.journey_start).to eq(entry_station)
+  end
 
-    context ' #exit_station' do
-    it 'should return the exit station' do 
-      expect(journey.exit_station).to eq ("Bank")
-    end     
-  end 
+  it "#end a journey" do
+    journey.journey_end=(exit_station)
+    expect(journey.journey_end).to eq(exit_station)
+  end
 
+  it "#get_journey shows us our journey" do
+    journey.journey_start=(entry_station)
+    journey.journey_end=(exit_station)
+    expect(journey.get_journey).to eq("Journey from #{entry_station} to #{exit_station}")
+  end
 
-end 
+  it "should know that a journey is complete" do
+    journey.journey_start=(entry_station)
+    journey.journey_end=(exit_station)
+    expect(journey).to be_complete
+  end
+
+  it "should know that a journey is not complete" do
+    test_journey = Journey.new("Start")
+    expect(test_journey).not_to be_complete
+  end
+
+  it "should calculate a fare for a complete journey" do
+    journey.journey_start=(entry_station)
+    journey.journey_end=(exit_station)
+    expect(journey.calculate).to eq(Journey::MINIMUM_FARE)
+  end
+
+  it "should calculate a fare for a incomplete journey" do
+    test_journey = Journey.new("Start")
+    expect(test_journey.calculate).to eq(Journey::PENALTY_FARE)
+  end
+end
